@@ -7,12 +7,13 @@ import { GiSettingsKnobs } from "react-icons/gi";
 
 function Parameters() {
   const { setContentData } = useContext(ContentContext);
-
+  const user_id = localStorage.getItem('user_id');
   const [formData, setFormData] = useState({
     tone: "none",
     topic: "",
     length: "",
     target_audience: "",
+    user_id: user_id,
   });
   const [isLoading, setIsLoading] = useState(false);
 
@@ -34,9 +35,21 @@ function Parameters() {
     setIsLoading(true);
     console.log(formData);
     axios
-      .post("http://192.168.137.83:8000/api/generate-initial", formData)
+      .post("http://13.203.76.50:8000/generate", formData)
       .then((res) => {
-        setContentData({ title: res.data.title, content: res.data.content, new: true });
+        console.log(res.data);
+        setContentData({
+          title: res.data.title,
+          content: res.data.content,
+          length: res.data.length,
+          new: true,
+          words: res.data.words,
+          seo_score: res.data.seo_score,
+          readability_score: res.data.readability_score,
+          tone: formData.tone,
+          target_audience: formData.target_audience,
+          topic: formData.topic,
+        });
         setIsLoading(false);
       })
       .catch((err) => {
@@ -47,7 +60,16 @@ function Parameters() {
 
   return (
     <div className="parameters">
-      <h2 style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Parameters &nbsp;<GiSettingsKnobs /></h2>
+      <h2
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        Parameters &nbsp;
+        <GiSettingsKnobs />
+      </h2>
       <form onSubmit={handleSubmit}>
         <input
           type="text"
@@ -61,8 +83,21 @@ function Parameters() {
           <option value="none" disabled>
             -- Select Tone --
           </option>
-          {['formal', 'informal', 'optimistic', 'worried', 'friendly', 'curious', 'assertive', 'encouraging', 'surprised', 'cooperative'].map(tone => (
-            <option key={tone} value={tone}>{tone}</option>
+          {[
+            "formal",
+            "informal",
+            "optimistic",
+            "worried",
+            "friendly",
+            "curious",
+            "assertive",
+            "encouraging",
+            "surprised",
+            "cooperative",
+          ].map((tone) => (
+            <option key={tone} value={tone}>
+              {tone}
+            </option>
           ))}
         </select>
         <input
@@ -81,11 +116,23 @@ function Parameters() {
           onChange={handleChange}
           required
         />
-        <button type="submit" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center',cursor: isLoading ? 'not-allowed' : 'pointer' }} disabled={isLoading}> 
+        <button
+          type="submit"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            cursor: isLoading ? "not-allowed" : "pointer",
+          }}
+          disabled={isLoading}
+        >
           {isLoading ? (
             <>Generating...</>
           ) : (
-            <>Generate Content &nbsp;<IoSparklesSharp /></>
+            <>
+              Generate Content &nbsp;
+              <IoSparklesSharp />
+            </>
           )}
         </button>
       </form>

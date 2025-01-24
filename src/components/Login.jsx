@@ -1,58 +1,72 @@
-import React, { useState } from 'react';
-import '../App.css';
-import axios from 'axios';
-import { RiAiGenerate2 } from "react-icons/ri";
-import { useNavigate } from 'react-router-dom';
-import { EmailContext } from '../context/EmailContext';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-const Login = () => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const navigate = useNavigate();
+function LoginPage() {
+  const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
-    const handleSubmit = (e) => {
-        axios.post('http://192.168.137.83:8000/auth/login', { email, password })
-            .then((res) => {
-                console.log(res);
-                alert('Logged in successfully');
-                navigate('/');
-            })
-            .catch((err) => {
-                console.log(err);
-                alert('Login failed');
-            });
-    };
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setError("");
 
-    return (
-        <div style={{ textAlign: 'center' }}>
-            <h2>Login to <span style={{fontFamily: "DM Serif Display", fontStyle:'italic'}}>SnapGen<RiAiGenerate2 /></span></h2>
-            <form onSubmit={handleSubmit} className='auth-form'>
-                <input 
-                    type="email" 
-                    id="email" 
-                    value={email}
-                    placeholder='Email'
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                />
-                <br />
-                <input 
-                    type="password" 
-                    id="password" 
-                    value={password}
-                    placeholder='Password'
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                />
-                <br />
-                <button type="submit">Sign In</button>
-            </form>
-            {/* copyrights */}
-            <br />
-            <p style={{color: '#505050'}}>&copy; 2025 SnapGen AI. All rights reserved.</p>
-        </div>
-    );
+    try {
+      // Replace the URL with your FastAPI machine’s IP/port
+      const response = await fetch("http://13.203.76.50:8000/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        // Because we are setting/using cookies, include credentials
+        credentials: "include",
+        body: JSON.stringify({ email, password }),
+      });
 
-};
+      if (response.ok) {
+        const data = await response.json();
+        localStorage.setItem("user_id", data.user_id);
+        navigate("/");
+      } else {
+        const data = await response.json();
+        setError(data.detail || "Login failed");
+      }
+    } catch (err) {
+      console.error("Login request failed:", err);
+      setError("Server error, please try again later.");
+    }
+  };
 
-export default Login;
+  return (
+    <div>
+      <div>
+        <h2>Login</h2>
+
+        {error && <p >{error}</p>}
+
+        <form onSubmit={handleLogin}>
+            <input
+              type="email"
+              value={email}
+              placeholder="Email"
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+
+            <input
+              type="password"
+              value={password}
+              placeholder="Password"
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+
+          <button type="submit">
+            Login
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+
+export default LoginPage;

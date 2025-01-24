@@ -15,7 +15,38 @@
   left: 0;
   height: 8vh;
   width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 2rem;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.header h1{
+  font-size: 2rem;
+}
+
+.blur{
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 100;
+  backdrop-filter: blur(5px);
+  display: none;
+}
+
+.header button{
+  font-size: 1rem;
+  padding: 0.5rem 1.2rem;
+  width: 100px;
+  border: none;
+  border-radius: 25px;
+  background-color: #101010;
+  color: white;
+  cursor: pointer;
 }
 
 h2{
@@ -28,7 +59,7 @@ input{
   width: 80%;
   margin: 0.5rem 0;
   padding: 1rem;
-  border: 1px solid #ccc;
+  border: 1px solid #333;
   border-radius: 5px;
 }
 
@@ -42,7 +73,7 @@ select{
   font-size: 1rem;
   margin: 0.5rem 0;
   padding: 1rem;
-  border: 1px solid #ccc;
+  border: 1px solid #333;
   border-radius: 5px;
 }
 
@@ -70,7 +101,7 @@ button{
   align-items: center;
   justify-content: center;
   padding: 2rem;
-  border: 1px solid #ccc;
+  border: 1px solid #333;
   border-radius: 10px;
 }
 
@@ -90,8 +121,15 @@ button{
   justify-content: flex-start;
   align-items: center;
   padding: 1rem 2rem;
-  border: 1px solid #ccc;
+  border: 1px solid #333;
   border-radius: 10px;
+  transform: translateX(0%);
+  transition: transform 1.5s ease-in-out;
+}
+
+.parameters-animated{
+  transform: translateX(-40%);
+  transition: transform 1.5s ease-in-out;
 }
 
 .parameters form{
@@ -109,9 +147,38 @@ button{
   justify-content: flex-start;
   align-items: flex-start;
   /* padding: 1rem 2rem; */
-  border: 1px solid #ccc;
+  border: 1px solid #333;
   border-radius: 10px;
   overflow: auto;
+  transform: translateX(0%);
+  transition: transform 1s ease-in-out;
+}
+
+.canvas-animated{
+  transform: translateX(-20%);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border: 3px solid #f00;
+  transition: transform 1.5s ease-in-out;
+  animation: border-colors 5s infinite;
+}
+
+/* border colors animation */
+@keyframes border-colors {
+  0% {
+    border-color: #f00;
+  }
+  25% {
+    border-color: #0f0;
+  }
+  50% {
+    border-color: #00f;
+  }
+  75% {
+    border-color: #ff0;
+  }
+  100% {
+    border-color: #f00;
+  }
 }
 
 .canvas__header{
@@ -132,8 +199,7 @@ button{
   justify-content: center;
   align-items: center;
   font-size: 1rem;
-  padding: 0.5rem 0rem;
-  width: 80px;
+  padding: 0.5rem 1.2rem;
   border: none;
   border-radius: 25px;
   background-color: #101010;
@@ -147,27 +213,45 @@ button{
 
 .canvas__footer{
   display: flex;
-  background-color: #efefef;
+  justify-content: space-between;
+  transform: translateY(100%);
   width: 100%;
 }
 
-.canvas__footer button{
+.canvas__footer-animated{
   display: flex;
+  justify-content: space-between;
+  width: 100%;
+  transform: translateY(0%);
+  transition: transform 1.5s ease-in-out;
+}
+
+.canvas__footer__card{
+  display: flex;
+  flex: 1;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
+  padding: 2rem;
+  border-right: 1px solid #333;
+  /* margin: 1rem; */
+}
+
+.canvas__footer__card:last-child{
+  border-right: none;
+}
+
+.canvas__footer__card h3{
+  font-size: 1.5rem;
+}
+
+.canvas__footer__card p{
   font-size: 1rem;
-  padding: 0.5rem 0rem;
-  width: 80px;
-  border: none;
-  border-radius: 25px;
-  background-color: #101010;
-  color: white;
-  cursor: pointer;
 }
 
 .save{
   color: black !important;
-  background-color: #efefef !important;
+  background-color: #ffffff !important;
 }
 
 .content{
@@ -197,10 +281,48 @@ button{
   border: none;
   width: 100%;
   height: 100%;
-  color: inherit;
+  background-color: transparent;
   resize: none;
 }
 
 .content textarea:focus{
   outline: none;
+}
+
+.history{
+  position: fixed;
+  top: 0;
+  left: -20%;
+  width: 20%;
+  flex: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  background-color: #ffe6cd;
+  gap: 1rem;
+  overflow: scroll;
+  z-index: 101;
+}
+
+.history__content{
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+  padding: 1rem;
+  gap: 1rem;
+}
+
+.history__item{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 1rem;
+  border: 1px solid #333;
+  border-radius: 10px;
+  cursor: pointer;
 }
