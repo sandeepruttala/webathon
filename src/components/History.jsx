@@ -9,7 +9,7 @@ function History() {
      const user_id = localStorage.getItem('user_id');
 
     useEffect(() => {
-        axios.get(`http://13.203.76.50:8000/topics/${user_id}`)
+        axios.get(`http://3.111.33.239:8000/topics/${user_id}`)
             .then((res) => {
                 console.log(res);
                 const topics = res.data.map(item => ({

@@ -13,7 +13,7 @@ function LoginPage() {
 
     try {
       // Replace the URL with your FastAPI machine’s IP/port
-      const response = await fetch("http://13.203.76.50:8000/login", {
+      const response = await fetch("http://3.111.33.239:8000/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         // Because we are setting/using cookies, include credentials

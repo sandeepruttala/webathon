@@ -35,7 +35,7 @@ function Parameters() {
     setIsLoading(true);
     console.log(formData);
     axios
-      .post("http://13.203.76.50:8000/generate", formData)
+      .post("http://3.111.33.239:8000/generate", formData)
       .then((res) => {
         console.log(res.data);
         setContentData({
