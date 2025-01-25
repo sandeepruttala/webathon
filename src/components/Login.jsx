@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { RiAiGenerate2 } from 'react-icons/ri';
 import bg from '../bg.png';
-import './styles.css';
+import './Styles.css';
 
 function LoginPage() {
   const navigate = useNavigate();

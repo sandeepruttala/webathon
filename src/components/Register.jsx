@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import bg from '../bg.png';
 import { RiAiGenerate2 } from 'react-icons/ri';
-import './styles.css';
+import './Styles.css';
 
 const Register = () => {
     const [email, setEmail] = useState('');
