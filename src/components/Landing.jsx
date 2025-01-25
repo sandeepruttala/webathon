@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { RiAiGenerate2 } from 'react-icons/ri';
-import './styles.css';
+import './Styles.css';
 import bg from '../bg.png';
 
 const HomePage = () => {
