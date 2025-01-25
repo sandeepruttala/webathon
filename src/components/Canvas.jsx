@@ -1,24 +1,15 @@
 import React, { useContext, useState, useEffect } from "react";
 import "../App.css";
 import { ContentContext } from "../context/ContentContext";
-import { IoSparklesSharp, IoReload, IoReloadCircle } from "react-icons/io5";
 import { BiSolidMagicWand } from "react-icons/bi";
 import axios from "axios";
 
 function Canvas() {
-  const { contentData } = useContext(ContentContext);
-  const setContentData = useContext(ContentContext).setContentData;
-  const setContext = useContext(ContentContext).setContentData;
+  const { contentData, setContentData } = useContext(ContentContext);
   const [displayedText, setDisplayedText] = useState("");
   const user_id = localStorage.getItem("user_id");
-
-  const [formData, setFormData] = useState({
-    tone: "",
-    topic: "",
-    length: "",
-    target_audience: "",
-    user_id: user_id,
-  });
+  const [prompt, setPrompt] = useState("");
+  const [isPromptVisible, setIsPromptVisible] = useState(false); // Control popup visibility
 
   useEffect(() => {
     if (contentData.new) {
@@ -54,26 +45,92 @@ function Canvas() {
     }
   }, [contentData.content, contentData.new]);
 
+  const handleSave = () => {
+    axios
+      .post("http://13.233.91.36:8000/save", {
+        title: contentData.title,
+        content: contentData.content,
+        user_id: user_id,
+      })
+      .then((res) => {
+        console.log(res);
+        alert("Content saved successfully");
+      })
+      .catch((err) => {
+        console.error(err);
+        alert("Failed to save content");
+      });
+  };
+
+  const handleRegeneration = () => {
+    console.log(prompt);
+    console.log(contentData);
+    console.log(user_id);
+    axios
+      .post("http://13.233.91.36:8000/prompt", {
+        title: contentData.title,
+        content: contentData.content,
+        user_id: user_id,
+        prompt: prompt,
+      })
+      .then((res) => {
+        console.log(res);
+        setContentData({
+          title: res.data.title,
+          content: res.data.content,
+          words: res.data.words,
+          seo_score: res.data.seo_score,
+          readability_score: res.data.readability_score,
+          new: true,
+        });
+        setIsPromptVisible(false); // Hide the popup after successful regeneration
+      })
+      .catch((err) => {
+        console.error(err);
+        alert("Failed to regenerate content");
+      });
+  };
+
   return (
     <div className="canvas">
+      {isPromptVisible && (
+        <div className="prompt-popup">
+          <h2>Enter a prompt</h2>
+          <textarea
+            placeholder="Write your prompt here"
+            value={prompt}
+            onChange={(e) => setPrompt(e.target.value)}
+          />
+          <div className="prompt-popup__actions">
+            <button onClick={handleRegeneration}>Regenerate</button>
+            <button onClick={() => setIsPromptVisible(false)}>Cancel</button>
+          </div>
+        </div>
+      )}
+
       <div className="canvas__header">
         <h2 style={{ display: "flex", alignItems: "center" }}>
           Canvas&nbsp;
           <BiSolidMagicWand />
         </h2>
         <div className="canvas__header__buttons">
-          <button className="canvas__header__button">Export</button>
+          <button onClick={() => setIsPromptVisible(true)}>Prompt</button>
+          <button onClick={handleSave}>Save</button>
         </div>
       </div>
+
       <div className="content">
         <input
           type="text"
           className="content__title"
           placeholder="Title"
           value={contentData.title}
-          onChange={(e) => {
-            setContext({ title: e.target.value, new: false });
-          }}
+          onChange={(e) =>
+            setContentData({
+              ...contentData,
+              title: e.target.value,
+            })
+          }
         />
         <textarea
           className="content__body"
@@ -81,14 +138,15 @@ function Canvas() {
           value={displayedText}
           onChange={(e) => {
             setDisplayedText(e.target.value);
-            setContext({
-              title: contentData.title,
-              content: displayedText,
+            setContentData({
+              ...contentData,
+              content: e.target.value,
               new: false,
             });
           }}
         />
       </div>
+
       <div className="canvas__footer">
         <div className="canvas__footer__card">
           <h3>Words</h3>
@@ -96,7 +154,7 @@ function Canvas() {
         </div>
         <div className="canvas__footer__card">
           <h3>Read Time</h3>
-          <p>{Math.ceil(displayedText.split(" ").length / 200)} min</p>
+          <p>{contentData.words > 100 ? "1 min" : "2 min"}</p>
         </div>
         <div className="canvas__footer__card">
           <h3>SEO Score</h3>

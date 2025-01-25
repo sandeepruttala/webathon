@@ -4,30 +4,30 @@ import { ContentContext } from "../context/ContentContext";
 import { useState, useEffect, useContext } from 'react'
 function History() {
 
-    const [history, setHistory] = useState([]);
+     const [history, setHistory] = useState([]);
      const { setContentData } = useContext(ContentContext);
-     const user_id = localStorage.getItem('user_id');
+     const user_id = localStorage.getItem('user_id').toString();
 
     useEffect(() => {
-        axios.get(`http://3.111.33.239:8000/topics/${user_id}`)
+        axios.get(`http://13.233.91.36:8000/topics/${user_id}`)
             .then((res) => {
-                console.log(res);
-                const topics = res.data.map(item => ({
-                    title: item.topic.title,
-                    content: item.topic.content,
-                    words: item.topic.words,
-                    seo_score: item.topic.seo_score,
-                    readability_score: item.topic.readability_score,
-                    tone: item.topic.tone,
-                    target_audience: item.topic.target_audience,
-                    topic: item.topic
-                }));
-                setHistory(topics);
+            console.log(res);
+            const topics = res.data.map(item => ({
+                title: item.topic.title,
+                content: item.topic.content,
+                words: item.topic.words,
+                seo_score: item.topic.seo_score,
+                readability_score: item.readability_score,
+                tone: item.topic.tone,
+                target_audience: item.topic.target_audience,
+                topic: item.topic
+            }));
+            setHistory(topics.reverse());
             })
             .catch((err) => {
-                console.log(err);
+            console.log(err);
             });
-    }, []);
+    },);
 
   return (
     <div className='history'>

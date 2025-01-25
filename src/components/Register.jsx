@@ -1,11 +1,16 @@
 import React, { useState } from 'react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import bg from '../bg.png';
+import { RiAiGenerate2 } from 'react-icons/ri';
+import './styles.css';
 
 const Register = () => {
     const [email, setEmail] = useState('');
     const [name, setName] = useState('');
     const [password, setPassword] = useState('');
-    const [profession, setProfession] = useState('student');
     const [error, setError] = useState('');
+    const navigate = useNavigate();
 
     const validatePassword = (password) => {
         const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d@$!%*?&]{8,12}$/;
@@ -18,12 +23,23 @@ const Register = () => {
             setError('Password must be 8-12 characters long, include uppercase, lowercase, and a number.');
             return;
         }
+        axios.post('http://13.233.91.36:8000/register', { email, name, password })
+            .then((res) => {
+                console.log(res);
+                alert('Registration successful');
+                navigate('/login');
+            })
+            .catch((err) => {
+                console.error(err);
+                setError('Registration failed');
+            });
         setError('');
     };
 
     return (
         <div>
-            <h2>Register</h2>
+            <img src={bg} alt="background" className="bg" />
+            <h2>Register <span style={{ fontFamily: 'DM Serif Display', fontStyle: 'italic' }}><RiAiGenerate2 /></span></h2>
             <form onSubmit={handleSubmit} className='auth-form'>
                 <input 
                     type="email" 
@@ -51,15 +67,6 @@ const Register = () => {
                     placeholder="Enter your password"
                     required
                 />
-                <br />
-                <select 
-                    id="profession" 
-                    value={profession}
-                    onChange={(e) => setProfession(e.target.value)}
-                >
-                    <option value="student">Student</option>
-                    <option value="scholar">Scholar</option>
-                </select>
                 <br />
                 <button type="submit">Register</button>
                 {error && <p style={{ color: 'red' }}>{error}</p>}

@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { RiAiGenerate2 } from 'react-icons/ri';
+import bg from '../bg.png';
+import './styles.css';
 
 function LoginPage() {
   const navigate = useNavigate();
@@ -13,7 +16,7 @@ function LoginPage() {
 
     try {
       // Replace the URL with your FastAPI machine’s IP/port
-      const response = await fetch("http://3.111.33.239:8000/login", {
+      const response = await fetch("http://13.233.91.36:8000/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         // Because we are setting/using cookies, include credentials
@@ -24,7 +27,7 @@ function LoginPage() {
       if (response.ok) {
         const data = await response.json();
         localStorage.setItem("user_id", data.user_id);
-        navigate("/");
+        navigate("/app");
       } else {
         const data = await response.json();
         setError(data.detail || "Login failed");
@@ -38,7 +41,8 @@ function LoginPage() {
   return (
     <div>
       <div>
-        <h2>Login</h2>
+        <img src={bg} alt="background" className="bg" />
+        <h2>Login <span style={{ fontFamily: "DM Serif Display", fontStyle: "italic" }}><RiAiGenerate2 /></span></h2>
 
         {error && <p >{error}</p>}
 
